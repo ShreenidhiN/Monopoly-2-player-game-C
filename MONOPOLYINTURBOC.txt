@@ -1,0 +1,613 @@
+#include <graphics.h>
+#include <conio.h>
+#include <dos.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+
+
+void play1();
+void play2();
+
+
+//char places1[12][5]={"START","IND","JPN","SG","JAIL","CHI","HK","WIN","REST","SL","CAN","MAL"};
+//char places2[12][5]={"START","IND","JPN","SG","JAIL","CHI","HK","WIN","REST","SL","CAN","MAL"};
+/*initialising cost of places to an array for boththe players*/
+float cost1[36]={0.0,2000,1500,1400,1500,1500,1000,1900,600,2000,1000, 500,0.0,2000,1500,1400,1500,1500,1000,1900,600,2000,1000, 500,0,2000,1500,1400,1500,1500,1000,1900,600,2000,1000, 500};
+float cost2[36]={0.0,2000,1500,1400,1500,1500,1000,1900,600,2000,1000, 500,0.0,2000,1500,1400,1500,1500,1000,1900,600,2000,1000, 500,0,2000,1500,1400,1500,1500,1000,1900,600,2000,1000, 500};
+
+/*onpurchase of place, player owns it. 1 for player 1, 2 for player 2, -1 for circles which cannot be bought */
+int owner[36]={-1,0,0,0,0,-1,0,0,0,-1,-1,0,-1,0,0,0,0,-1,0,0,0,-1,-1,0-1,0,0,0,0,-1,0,0,0,-1,-1,0};
+
+/*initialising variables of starting amount*/
+float amt1=15000.0,amt2=15000.0;
+float bank=30000;
+int p1=0,p2=0;
+//Declaring and initialising variables for player2
+int x2=0,y2=0,d2=0, tc2=0 ;
+int px2=0,py2=0;
+
+
+void main()
+ {
+
+	/*intro for the game */
+	 printf("                            Welcome To Monopoly World\n\n");
+	 printf("Rules of this game are:\n");
+	 printf("Only two players can play!\n\nPlayer 1 is RED in colour\n\nPlayer 2 is BLUE in colour");
+	 printf("\n\nEach of them have Rs.15,000 ");
+	 printf("\nYou have to press any number to play in your turn");
+	 printf("\nPlayer 1 plays first while Player 2 plays second");
+	 printf("\nWhichever player lands first on a place buys the same automatically. If any player completes three rounds , the game is over");
+	printf("\nIND-India,JPN-Japan,SG-Singapore,CHI-China,REST-Rest House,MAL-Malasiya,\nCAN-Canada,SL-Sri Lanka,Jail-Fine,Win-You win money,HK-Hong Kong");
+	printf("\nIf a player lands on the place bought by the other player, a fine of 10percent of the cost of the place is paid. Landing on jail, rest house, player pays a fine.Win refers to the gain for the player.");
+	 printf("\n\nPress any number to continue\n\n");
+	 int r;
+	 scanf("%d",r);
+	 clrscr();
+
+	int graphicdriver=DETECT,graphicmode;
+
+	clrscr();
+	initgraph(&graphicdriver,&graphicmode,"C:\\TC\\BGI");
+
+	  //top 4 circles Drawing/printing in a row
+	circle(100, 100, 50);
+	circle(200, 100, 50);
+	circle(300, 100, 50);
+	circle(400, 100, 50);
+
+//next 4 circles drawn vertically	
+	circle(100, 200, 50);
+	circle(400, 200, 50);
+	circle(100, 300, 50);
+	circle(400, 300, 50);
+      //last 4 cicles row
+      circle(100, 400,50);
+      circle(200 , 400,50);
+      circle(300, 400, 50);
+      circle(400, 400, 50);
+
+/*printing the values inside the circle*/
+outtextxy(90,90,"START");
+
+ outtextxy(190,90,"IND");
+ outtextxy(190,110,"2000");
+ outtextxy(290,90,"JPN");
+ outtextxy(290,110,"1500");
+ outtextxy(390,90,"SG");
+outtextxy(390,110,"1400");
+outtextxy(90,390,"JAIL");
+outtextxy(90,410,"2000");
+outtextxy(390,190,"CHI");
+outtextxy(390,210,"1500");
+outtextxy(90,190,"HK");
+outtextxy(90,210,"500");
+outtextxy(90,290,"WIN");
+outtextxy(90,310,"1000");
+outtextxy(390,290,"REST");
+outtextxy(390,310,"1500");
+outtextxy(190,390,"SL");
+outtextxy(190,410,"600");
+outtextxy(290,390,"CAN");
+outtextxy(290,410,"1900");
+outtextxy(390,390,"MAL");
+outtextxy(390,410,"1000");
+
+
+play1();
+getch();
+}
+  void play1()
+{/* in this function, player1 rolls the dice and movement is shown on the board along with the transactions  */
+    int x,y,d, tc ;
+d=0;
+tc=0;
+   int px=0,py=0;
+/* Getting inputs for 3 rounds .  */
+    while(tc<=36)    
+{
+    int a;
+     px=x;
+     py=y;
+     int n,min,max;
+     min=4;
+     max=6;
+/*generating random number*/
+     srand(time(NULL));
+     d=min+rand()%(max-min);
+     p1+=d;//for index of cost
+     outtextxy(100,25,"Enter a number to continue");
+     scanf("%d",&a);
+       tc=tc+d;
+/*random number is printed*/
+      printf("%d ",d);
+
+/*moveto function refers to the coordinates that are given in moveto that circle*/
+/*getx and gety function gets the previous locations or coordinates to locate the position of the player */
+/*setfill style function fills with a pattern*/
+/*floodfill fills the circle with the given colour*/
+/*tc refers to the total dice count of player 1 . The position movement is based on the tc. When tc==1 or 2 or any number, the respective coordinate inside the corresponding circle is referred to  */
+
+	   if(tc==12||tc==24||tc==36)
+	   {
+      moveto(100,100);
+	x=getx();
+	y=gety();
+	setfillstyle(HATCH_FILL,RED);
+	floodfill(100,100,WHITE);
+  setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px,py,WHITE);
+
+	   }
+       else if(tc==1||tc==13||tc==25)
+	{
+	moveto(200,100);
+	x=getx();
+	y=gety();
+	setfillstyle(HATCH_FILL,RED);
+	floodfill(200,100,WHITE);
+                  setfillstyle(HATCH_FILL,BLACK); // to recolour or remove previous position that is coloured
+                  floodfill(px,py,WHITE);
+      
+
+     if(owner[p1]!=2&&owner[p1]!=1)                   //checking if the place is preowned or belongs to player2
+     {
+      owner[1]=1;owner[13]=1;owner[25]=1;
+      amt1-=cost1[p1]; bank+=cost1[p1];
+     }
+     if(owner[p1]==2) //to pay a rent of 10% if landed on player 2's place
+{
+amt1-=0.1*cost1[p1];amt2+=0.1*cost1[p1];
+}
+	}
+     else if(tc==2||tc==14||tc==26)
+	{
+	moveto(300,100);
+	x=getx();
+	y=gety();
+	setfillstyle(HATCH_FILL,RED);
+	floodfill(300,100,WHITE);
+
+     setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px,py,WHITE);
+
+     if(owner[p1]!=2&&owner[p1]!=1)
+     {
+      owner[2]=1;owner[14]=1;owner[26]=1;
+      amt1-=cost1[p1];// printf("amt%f",amt1);
+      bank+=cost1[p1];     
+      }
+ if(owner[p1]==2) //to pay a rent of 10% if landed on player 2's place
+{
+amt1-=0.1*cost1[p1];amt2+=0.1*cost1[p1];
+}
+
+	}
+  else  if(tc==3||tc==15||tc==27)
+	{
+	moveto(400,100);
+	x=getx();
+	y=gety();
+	setfillstyle(HATCH_FILL,RED);
+	floodfill(400,100,WHITE);
+  setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px,py,WHITE);
+
+     if(owner[p1]!=2&&owner[p1]!=1)
+     {
+      owner[3]=1;owner[15]=1;owner[27]=1;
+      amt1-=cost1[p1];// printf("amt%f",amt1);
+      bank+=cost1[p1];
+      }
+ if(owner[p1]==2) //to pay a rent of 10% if landed on player 2's place
+{
+amt1-=0.1*cost1[p1];amt2+=0.1*cost1[p1];
+}
+
+
+	}
+   else if(tc==4||tc==16||tc==28)
+	{
+	moveto(400,200);
+	x=getx();
+	y=gety();
+	setfillstyle(HATCH_FILL,RED);
+	floodfill(400,200,WHITE);
+
+       setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px,py,WHITE);
+
+
+     if(owner[p1]!=2&&owner[p1]!=1)
+     {
+      owner[4]=1;owner[16]=1;owner[28]=1;
+      amt1-=cost1[p1];// printf("amt%f",amt1);
+      bank+=cost1[p1];
+      }
+ if(owner[p1]==2) //to pay a rent of 10% if landed on player 2's place
+{
+amt1-=0.1*cost1[p1];amt2+=0.1*cost1[p1];
+}
+
+
+	}
+  else if(tc==5||tc==17||tc==29)
+	{
+	moveto(400,300);
+	x=getx();
+	y=gety();
+	setfillstyle(HATCH_FILL,RED);
+	floodfill(400,300,WHITE);
+  setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px,py,WHITE);
+
+    amt1-=cost1[p1];// printf("amt%f",amt1);
+    bank+=cost1[p1];
+	}
+   else if(tc==6||tc==18||tc==30) {
+	moveto(400,400);
+	x=getx();
+	y=gety();
+	setfillstyle(HATCH_FILL,RED);
+	floodfill(400,400,WHITE);
+  setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px,py,WHITE);
+
+
+     if(owner[p1]!=2&&owner[p1]!=1)
+     {
+      owner[6]=1;owner[18]=1;owner[30]=1;
+      amt1-=cost1[p1];// printf("amt%f",amt1);
+      bank+=cost1[p1];
+ }
+ if(owner[p1]==2) //to pay a rent of 10% if landed on player 2's place
+{
+amt1-=0.1*cost1[p1];amt2+=0.1*cost1[p1];
+}
+
+	}
+   else if(tc==7||tc==19||tc==31)
+	{
+	moveto(300,400);
+	x=getx();
+	y=gety();
+	setfillstyle(HATCH_FILL,RED);
+	floodfill(300,400,WHITE);
+  setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px,py,WHITE);
+
+
+     if(owner[p1]!=2&&owner[p1]!=1)
+     {
+      owner[7]=1;owner[19]=1;owner[31]=1;
+      amt1-=cost1[p1];// printf("amt%f",amt1);
+      bank+=cost1[p1];
+      }
+ if(owner[p1]==2) //to pay a rent of 10% if landed on player 2's place
+{
+amt1-=0.1*cost1[p1];amt2+=0.1*cost1[p1];
+}
+
+	}
+	else if(tc==8||tc==20||tc==32)
+	{
+	moveto(200,400);
+	x=getx();
+	y=gety();
+	setfillstyle(HATCH_FILL,RED);
+	floodfill(200,400,WHITE);
+  setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px,py,WHITE);
+
+
+     if(owner[p1]!=2&&owner[p1]!=1)
+     {
+      owner[8]=1;owner[20]=1;owner[32]=1;
+      amt1-=cost1[p1];// printf("amt%f",amt1);
+      bank+=cost1[p1];
+      }
+ if(owner[p1]==2) //to pay a rent of 10% if landed on player 2's place
+{
+amt1-=0.1*cost1[p1];amt2+=0.1*cost1[p1];
+}
+
+	}
+  else if(tc==9||tc==21||tc==33)
+	{
+	moveto(100,400);
+	x=getx();
+	y=gety();
+	setfillstyle(HATCH_FILL,RED);
+	floodfill(100,400,WHITE);
+  setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px,py,WHITE);
+
+                 bank+=cost1[p1];amt1-=cost1[p1];// printf("amt%f",amt1);
+
+	}
+   else if(tc==10||tc==22||tc==34)
+	{
+	moveto(100,300);
+	x=getx();
+	y=gety();
+	setfillstyle(HATCH_FILL,RED);
+	floodfill(100,300,WHITE);
+     setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px,py,WHITE);
+
+   amt1+=cost1[p1];// printf("amt%f",amt1);
+   bank-=cost1[p1];
+	}
+   else if(tc==11||tc==23||tc==35)
+	{
+	moveto(100,200);
+	x=getx();
+	y=gety();
+	setfillstyle(HATCH_FILL,RED);
+	floodfill(100,200,WHITE);
+       setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px,py,WHITE);
+
+     if(owner[p1]!=2&&owner[p1]!=1)
+     {
+      owner[p1]=1;
+      amt1-=cost1[p1];//printf("amt%f",amt1);
+      bank+=cost1[p1];
+      }
+ if(owner[p1]==2) //to pay a rent of 10% if landed on player 2's place
+{
+amt1-=0.1*cost1[p1];amt2+=0.1*cost1[p1];
+}
+
+	}
+
+play2();//calling a functio play2
+	 }
+
+	 printf("GAME OVER.....\n");
+	 printf("ACCOUNT BALANCE of PLAYER1 %f and PLAYER2 %f",amt1,amt2);
+	 printf("\t\n BANK BALANCE %f ",bank);
+
+/*checking the account balance of the players to choose the winner */
+
+ if(amt1>amt2)
+ printf("\t\t\tPLAYER 1 IS THE WINNER");
+else if(amt2>amt1)
+printf("\t\t\tPLAYER 2 IS THE WINNER");
+
+	 }
+
+
+void play2()
+{
+   /*This is a function in which player 2 rolls the dice and the random number is generated, movement of the position, checking ownership and purchase */
+/* Getting dice values using random number generator.  */
+
+    int a2;
+     px2=x2;
+     py2=y2;
+     int n2,min2,max2;
+     min2=1;
+     max2=6;
+     srand(time(NULL));
+     d2=min2+rand()%(max2-min2);
+     outtextxy(100,25,"Enter a number to continue");
+     scanf("%d",&a2);
+p2+=d2;
+       tc2=tc2+d2;
+// random number is generated
+      printf("%d ",d2);
+
+/*tc2 is the variable for dice count of the second player*/
+
+	   if(tc2==12||tc2==24||tc2==36)
+	   {
+      moveto(100,100);
+	x2=getx();
+	y2=gety();
+	setfillstyle(HATCH_FILL,BLUE);
+	floodfill(100,100,WHITE);
+  setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px2,py2,WHITE);
+	   }
+       else if(tc2==1||tc2==13||tc2==25)
+	{
+	moveto(200,100);
+	x2=getx();
+	y2=gety();
+	setfillstyle(HATCH_FILL,BLUE);
+	floodfill(200,100,WHITE);
+  setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px2,py2,WHITE);
+   if(owner[p2]!=1&&owner[p2]!=2)
+     {
+      owner[1]=2;owner[13]=2;owner[25]=2;
+      amt2-=cost2[p2];
+      bank+=cost2[p2];
+     }
+if(owner[p2]==1)
+{
+amt2-=0.1*cost2[p2];amt1+=0.1*cost2[p2];
+}
+
+
+	}
+     else if(tc2==2||tc2==14||tc2==26)
+	{
+	moveto(300,100);
+	x2=getx();
+	y2=gety();
+	setfillstyle(HATCH_FILL,BLUE);
+	floodfill(300,100,WHITE);
+
+     setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px2,py2,WHITE);
+ if(owner[p2]!=1&&owner[p2]!=2)
+     {
+      owner[2]=2;owner[14]=2;owner[26]=2;
+      amt2-=cost2[p2];bank+=cost2[p2];
+     }
+if(owner[p2]==1)
+{
+amt2-=0.1*cost2[p2];amt1+=0.1*cost2[p2];
+}
+
+	}
+  else  if(tc2==3||tc2==15||tc2==27)
+	{
+	moveto(400,100);
+	x2=getx();
+	y2=gety();
+	setfillstyle(HATCH_FILL,BLUE);
+	floodfill(400,100,WHITE);
+  setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px2,py2,WHITE);
+ if(owner[p2]!=1&&owner[p2]!=2)
+     {
+      owner[3]=2;owner[15]=2;owner[27]=2;
+      amt2-=cost2[p2];bank+=cost2[p2];
+     }
+if(owner[p2]==1)
+{
+amt2-=0.1*cost2[p2];amt1+=0.1*cost2[p2];
+}
+
+	}
+   else if(tc2==4||tc2==16||tc2==28)
+	{
+	moveto(400,200);
+	x2=getx();
+	y2=gety();
+	setfillstyle(HATCH_FILL,BLUE);
+	floodfill(400,200,WHITE);
+
+       setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px2,py2,WHITE);
+ if(owner[p2]!=1&&owner[p2]!=2)
+     {
+      owner[4]=2;owner[16]=2;owner[28]=2;
+      amt2-=cost2[p2];bank+=cost2[p2];
+     }
+if(owner[p2]==1)
+{
+amt2-=0.1*cost2[p2];amt1+=0.1*cost2[p2];
+}
+
+	}
+  else if(tc2==5||tc2==17||tc2==29)
+	{
+	moveto(400,300);
+	x2=getx();
+	y2=gety();
+	setfillstyle(HATCH_FILL,BLUE);
+	floodfill(400,300,WHITE);
+  setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px2,py2,WHITE);
+    
+      amt2-=cost2[p2];
+      bank+=cost2[p2];
+	}
+   else if(tc2==6||tc2==18||tc2==30) {
+	moveto(400,400);
+	x2=getx();
+	y2=gety();
+	setfillstyle(HATCH_FILL,BLUE);
+	floodfill(400,400,WHITE);
+  setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px2,py2,WHITE);
+ if(owner[p2]!=1&&owner[p2]!=2)
+     {
+      owner[6]=2;owner[18]=2;owner[30]=2;
+      amt2-=cost2[p2];bank+=cost2[p2];
+     }
+if(owner[p2]==1)
+{
+amt2-=0.1*cost2[p2];amt1+=0.1*cost2[p2];
+}
+
+	}
+   else if(tc2==7||tc2==19||tc2==31)
+	{
+	moveto(300,400);
+	x2=getx();
+	y2=gety();
+	setfillstyle(HATCH_FILL,BLUE);
+	floodfill(300,400,WHITE);
+  setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px2,py2,WHITE);
+ if(owner[p2]!=1&&owner[p2]!=2)
+     {
+      owner[7]=2;owner[19]=2;owner[31]=2;
+      amt2-=cost2[p2];bank+=cost2[p2];
+     }
+if(owner[p2]==1)
+{
+amt2-=0.1*cost2[p2];amt1+=0.1*cost2[p2];
+}
+	}
+	else if(tc2==8||tc2==20||tc2==32)
+	{
+	moveto(200,400);
+	x2=getx();
+	y2=gety();
+	setfillstyle(HATCH_FILL,BLUE);
+	floodfill(200,400,WHITE);
+  setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px2,py2,WHITE);
+ if(owner[p2]!=1&&owner[p2]!=2)
+     {
+      owner[8]=2;owner[20]=2;owner[32]=2;
+      amt2-=cost2[p2];bank+=cost2[p2];
+     }
+if(owner[p2]==1)
+{
+amt2-=0.1*cost2[p2];amt1+=0.1*cost2[p2];
+}
+
+	}
+  else if(tc2==9||tc2==21||tc2==33)
+	{
+	moveto(100,400);
+	x2=getx();
+	y2=gety();
+	setfillstyle(HATCH_FILL,BLUE);
+	floodfill(100,400,WHITE);
+  setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px2,py2,WHITE);
+
+      amt2-=cost2[p2];
+
+	}
+   else if(tc2==10||tc2==22||tc2==34)
+	{
+	moveto(100,300);
+	x2=getx();
+	y2=gety();
+	setfillstyle(HATCH_FILL,BLUE);
+	floodfill(100,300,WHITE);
+     setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px2,py2,WHITE);
+amt2+=cost2[p2];bank-=cost2[p2];
+	}
+   else if(tc2==11||tc2==23||tc2==35)
+	{
+	moveto(100,200);
+	x2=getx();
+	y2=gety();
+	setfillstyle(HATCH_FILL,BLUE);
+	floodfill(100,200,WHITE);
+       setfillstyle(HATCH_FILL,BLACK);
+       floodfill(px2,py2,WHITE);
+ if(owner[p2]!=1&&owner[p2]!=2)
+     {
+      owner[11]=2;owner[23]=2;owner[35]=2;
+      amt2-=cost2[p2];bank+=cost2[p2];
+     }
+if(owner[p2]==1)
+{
+amt2-=0.1*cost2[p2];amt1+=0.1*cost2[p2];
+}
+
+	}
+	}
