@@ -1,0 +1,2 @@
+# Monopoly-2-player-game-C
+Mini Monopoly, developed using C​, which is a ​two-players board game​. The rectangular board with ​multiple squares having countries and their costs, colours ​blue and ​red representing the two players was implemented using ‘​graphics.h​’ header file.​Dice rolled by players are ​randomly generated​. Bonus points and fines are collected based on place of landing. The ​winner​ has ​greater points​ at the end of the game.   
